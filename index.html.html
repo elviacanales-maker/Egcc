@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposición: Brecha Digital y Gobierno Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .slide-transition {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col justify-between p-4 md:p-6 bg-slate-950">
+
+    <!-- Encabezado Fijo -->
+    <header class="flex justify-between items-center border-b border-slate-800 pb-3 h-12">
+        <div class="flex items-center gap-2">
+            <span class="bg-blue-600 text-xs font-semibold px-2.5 py-1 rounded-full text-white uppercase tracking-wider">Maestría</span>
+            <span class="text-xs text-slate-400 font-medium hidden md:inline">Sistemas de Información y Gobierno Digital</span>
+        </div>
+        <div class="text-xs text-slate-400 font-mono" id="slide-counter">
+            Diapositiva 1 / 11
+        </div>
+    </header>
+
+    <!-- Contenedor Principal de la Diapositiva -->
+    <main class="flex-grow flex flex-col md:flex-row gap-6 my-4 overflow-hidden relative">
+        
+        <!-- Área de la Diapositiva -->
+        <div class="flex-grow md:w-2/3 bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-10 flex flex-col justify-between shadow-2xl relative overflow-y-auto">
+            
+            <!-- Contenido Dinámico de la Diapositiva -->
+            <div id="slide-content" class="h-full flex flex-col justify-between">
+                <!-- Se inyectará dinámicamente con JavaScript -->
+            </div>
+            
+            <!-- Barra de Progreso Inferior -->
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-slate-800">
+                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300" style="width: 9%;"></div>
+            </div>
+        </div>
+
+        <!-- Panel Lateral: Guion del Orador y Herramientas -->
+        <div class="w-full md:w-96 flex flex-col bg-slate-900/50 border border-slate-800 rounded-2xl p-4 overflow-y-auto max-h-[30vh] md:max-h-full">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                     Notas del Orador (Guion de Exposición)
+                </h4>
+                <button id="toggle-guide" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-semibold">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Leer notas
+                </button>
+            </div>
+            <p id="speaker-notes" class="text-sm text-slate-300 leading-relaxed italic">
+                Cargando notas...
+            </p>
+        </div>
+    </main>
+
+    <!-- Barra de Navegación Fija -->
+    <footer class="flex justify-between items-center border-t border-slate-800 pt-3 h-14">
+        <div class="flex items-center gap-2">
+            <button id="btn-prev" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition text-slate-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <button id="btn-next" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition text-slate-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed">
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Indicador de Control Táctil/Teclado -->
+        <div class="text-[10px] text-slate-500 hidden sm:flex items-center gap-1.5">
+            <span class="border border-slate-800 px-1.5 py-0.5 rounded bg-slate-900">←</span>
+            <span class="border border-slate-800 px-1.5 py-0.5 rounded bg-slate-900">→</span>
+            <span>Usa las flechas del teclado para navegar</span>
+        </div>
+
+        <div>
+            <button id="btn-reset" class="text-xs text-slate-500 hover:text-slate-400 flex items-center gap-1">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reiniciar
+            </button>
+        </div>
+    </footer>
+
+    <!-- Datos de la Presentación -->
+    <script>
+        const slidesData = [
+            {
+                id: 1,
+                notes: "Estimados colegas y profesionales de la gestión pública, buenas tardes. Bienvenidos a esta sesión dedicada al análisis de uno de los desafíos más silenciosos pero profundos de la modernización del Estado: la Brecha Digital. A menudo, en el diseño de las políticas públicas y las estrategias de gobierno digital, caemos en el reduccionismo tecnológico. Es decir, asumimos que modernizar el Estado es simplemente lanzar un portal web, implementar una aplicación móvil o digitalizar formularios. Sin embargo, la realidad de nuestros territorios nos demuestra que la tecnología, por sí sola, no es de por sí inclusiva. El día de hoy analizaremos bajo un enfoque crítico y basado en evidencia empírica de organismos como el BID, la CEPAL, el INEI y CEPLAN, cómo la brecha digital interfiere directamente en el éxito de las reformas del Gobierno Digital y qué parámetros estratégicos debemos trazar como gestores del cambio.",
+                content: `
+                    <div class="flex-grow flex flex-col justify-center items-center text-center space-y-6">
+                        <div class="p-3 bg-blue-600/10 border border-blue-500/20 rounded-2xl">
+                            <i data-lucide="shield-alert" class="w-12 h-12 text-blue-500"></i>
+                        </div>
+                        <h1 class="text-3xl md:text-5xl font-serif font-bold text-white tracking-tight leading-tight max-w-4xl">
+                            La Brecha Digital como Barrera Excluyente en el Gobierno Digital
+                        </h1>
+                        <p class="text-lg md:text-xl text-slate-400 max-w-2xl font-light">
+                            Un análisis multidimensional desde la gestión estratégica y las políticas públicas del Estado peruano.
+                        </p>
+                        <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-slate-500">
+                            <span class="flex items-center gap-1.5"><i data-lucide="compass" class="w-4 h-4"></i> Metas al 2030 y 2050</span>
+                            <span class="hidden sm:inline">•</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="user" class="w-4 h-4"></i> Maestría en Gestión Pública</span>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                notes: "Iniciemos cuestionando cómo medimos la brecha digital. Tradicionalmente, la métrica ha sido binaria: '¿tiene o no acceso a Internet?'. Bajo esta óptica simplista, la región muestra un avance espectacular. Sin embargo, la CEPAL y la agenda eLAC nos invitan a un cambio drástico de paradigma hacia el concepto de 'Conectividad Significativa'. ¿Qué significa esto? Que el simple acceso ya no es suficiente. El Centro de Estudios de Brasil (CETIC.br) aplicó esta medición en Brasil, Chile y República Dominicana. Los resultados demuestran que, al cruzar calidad, velocidad, dispositivos (computadora frente a solo celular) y capacidades, la conectividad realmente significativa cae drásticamente a un rango de apenas el 20%. No podemos diseñar servicios digitales para un 80% ficticio si solo el 20% tiene la capacidad real y de calidad para consumirlos.",
+                content: `
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">El Cambio de Paradigma</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">De la simple Brecha de Acceso a la "Conectividad Significativa"</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-3">
+                                <div class="flex items-center gap-2 text-rose-500 font-semibold text-sm">
+                                    <i data-lucide="ban" class="w-4 h-4"></i> Enfoque Tradicional (Obsoleto)
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Medición binaria centrada únicamente en si la persona cuenta o no con una conexión básica a Internet. Ignora el tipo de dispositivo y la estabilidad técnica del servicio, asumiendo un entorno irreal de igualdad.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-3">
+                                <div class="flex items-center gap-2 text-emerald-500 font-semibold text-sm">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i> Conectividad Significativa (CEPAL 2025)
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+                                    <span class="flex items-center gap-1"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400"></i> Calidad / Velocidad</span>
+                                    <span class="flex items-center gap-1"><i data-lucide="laptop" class="w-3.5 h-3.5 text-blue-400"></i> Computadora propia</span>
+                                    <span class="flex items-center gap-1"><i data-lucide="wallet" class="w-3.5 h-3.5 text-blue-400"></i> Asequibilidad</span>
+                                    <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-blue-400"></i> Habilidades digitales</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 flex items-center gap-4 mt-4">
+                            <i data-lucide="alert-circle" class="w-8 h-8 text-blue-400 flex-shrink-0"></i>
+                            <p class="text-xs text-blue-300 leading-relaxed">
+                                <strong>Dato del CETIC.br:</strong> Cuando se incorporan estas variables de calidad, el porcentaje de población con conectividad real cae drásticamente de niveles cercanos al <strong>80%</strong> a cifras en torno al <strong>20%</strong> en la región de las Américas.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                notes: "Acerquemos este debate a nuestra realidad nacional utilizando la evidencia del INEI. Estos datos oficiales de la Encuesta Nacional de Hogares nos revelan una paradoja dolorosa. Si analizamos la telefonía móvil, prácticamente hemos universalizado el dispositivo: el 95.2% de los hogares peruanos tiene un celular. Sin embargo, cuando bajamos a la tenencia de computadoras, el promedio nacional cae al 36.8%. Pero el dato verdaderamente demoledor para un planificador social es la asimetría territorial. En Lima Metropolitana, el 55% de los hogares tiene una computadora, una herramienta indispensable para redactar un informe, programar o estudiar formalmente. En el área rural del Perú, esa cifra se hunde al 8.2%. Menos de uno de cada diez hogares rurales tiene una computadora. El celular es el gran democratizador del entretenimiento y la comunicación básica, pero la computadora sigue siendo el cuello de botella de la productividad y la educación.",
+                content: `
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Evidencia Oficial INEI</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">Radiografía del Acceso a las TIC en el Perú</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-800 text-center">
+                                <span class="text-xs text-slate-400">Hogares con Celular</span>
+                                <div class="text-3xl font-bold text-blue-500 my-1">95.2%</div>
+                                <span class="text-[10px] text-slate-500">Universalizado (ENAHO 2025)</span>
+                            </div>
+                            <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-800 text-center">
+                                <span class="text-xs text-slate-400">Hogares con Internet</span>
+                                <div class="text-3xl font-bold text-amber-500 my-1">58.9%</div>
+                                <span class="text-[10px] text-slate-500">Acceso Móvil Dominante</span>
+                            </div>
+                            <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-800 text-center">
+                                <span class="text-xs text-slate-400">Hogares con Computadora</span>
+                                <div class="text-3xl font-bold text-rose-500 my-1">36.8%</div>
+                                <span class="text-[10px] text-slate-500">Brecha de Productividad</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i data-lucide="map" class="w-4 h-4 text-blue-500"></i> Brecha Territorial del Dispositivo (Hogares con Computadora)
+                            </h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-300">Lima Metropolitana</span>
+                                    <span class="font-bold text-white">55.0%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500" style="width: 55%;"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-300">Resto Urbano</span>
+                                    <span class="font-bold text-white">41.3%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500" style="width: 41.3%;"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-300">Área Rural</span>
+                                    <span class="font-bold text-rose-400">8.2%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-rose-500" style="width: 8.2%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                notes: "Cerrar la brecha digital no es solo un asunto de justicia social; es, fundamentalmente, una palanca de competitividad y crecimiento económico. Los estudios económicos recopilados por CEPLAN y el Banco de Desarrollo de América Latina (CAF) demuestran que si nuestros países lograran converger con las tasas de digitalización de la OCDE, el PIB regional experimentaría un incremento adicional del 3% anual. ¿Por qué ocurre esto? Porque la velocidad y calidad de la conexión determinan el grado de adopción de tecnologías exponenciales. El 86.5% de nuestras empresas son microempresas. Estas unidades de negocio, a menudo familiares o de subsistencia, están excluidas de los beneficios de la transformación digital: no pueden vender por comercio electrónico avanzado, no acceden a financiamiento fintech simplificado, y no pueden participar competitivamente en los sistemas de compras electrónicas del Estado. La brecha digital condena a nuestras PYMEs a la informalidad.",
+                content: `
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Impacto de Competitividad</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">El Costo de Oportunidad de la Exclusión Digital</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                            <div class="bg-gradient-to-br from-blue-950/40 to-slate-900 border border-blue-900/40 rounded-xl p-5 space-y-3">
+                                <div class="text-3xl font-bold text-blue-400 flex items-center gap-1">
+                                    +3.0% <span class="text-xs font-normal text-slate-400">PIB anual (CEPLAN / CAF)</span>
+                                </div>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    La convergencia con las tasas de digitalización de la OCDE impulsaría decisivamente la productividad agregada del país mediante el uso intensivo de la ciencia, la tecnología y el despliegue del ecosistema digital.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+                                <div class="text-3xl font-bold text-rose-400">
+                                    86.5% <span class="text-xs font-normal text-slate-400">del Tejido Empresarial</span>
+                                </div>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    El porcentaje abrumador de empresas son microempresas con limitaciones extremas de equipamiento, lo que las margina de las cadenas de valor modernas y de las licitaciones públicas de compras electrónicas.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 text-xs text-slate-400 flex items-center gap-3">
+                            <i data-lucide="cpu" class="w-8 h-8 text-blue-500 flex-shrink-0"></i>
+                            <span>La banda ancha confiable y el despliegue de tecnologías móviles (5G) son esenciales para el desarrollo de la telemedicina, logística inteligente, agroindustria de precisión y resiliencia territorial frente a desastres.</span>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                notes: "Hablemos ahora de la interacción directa entre el Estado y el ciudadano. El Banco Interamericano de Desarrollo (BID) publicó una investigación titulada 'El fin del trámite eterno'. En ella se revela que un trámite promedio en nuestra región toma 5.4 horas presenciales. Esto es una pérdida masiva de productividad social. Pero lo peor es que este costo no es equitativo: para una persona de altos ingresos, perder 5 horas significa incomodidad; para un de bajos ingresos, representa perder el jornal del día y arriesgar el sustento. El problema radica en que hemos construido el Estado bajo una lógica burocrática, donde cada entidad opera en un silo aislado y traslada el costo de la desarticulación al ciudadano. Le exigimos que traiga el certificado de la entidad A para presentarlo en la entidad B. El verdadero Gobierno Digital rompe esta lógica burocrática y pasa a una lógica de servicio, donde el Estado opera como una sola organización coordinada.",
+                content: `
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="clock" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Diagnóstico de Trámites Públicos</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">La Paradoja del Gobierno Digital: El "Trámite Eterno"</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center pt-2">
+                            <div class="md:col-span-4 bg-slate-950/70 p-5 rounded-xl border border-slate-800 text-center space-y-2">
+                                <span class="text-xs text-slate-400">Tiempo Promedio del Trámite</span>
+                                <div class="text-4xl font-extrabold text-rose-500">5.4 Horas</div>
+                                <span class="text-[10px] text-slate-500 leading-tight block">(Promedio presencial en la región - BID)</span>
+                            </div>
+                            
+                            <div class="md:col-span-8 space-y-3 text-xs text-slate-300">
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                                    <strong class="text-white block mb-1">Costo Transaccional Inequitativo:</strong>
+                                    El costo real de viajar a ventanillas, hacer filas y perder jornales de trabajo recae desproporcionadamente en las poblaciones más vulnerables e informales, ensanchando la exclusión social.
+                                </div>
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                                    <strong class="text-white block mb-1">La Lógica Burocrática de Silos:</strong>
+                                    El Estado tradicional exige al ciudadano actuar como "mensajero" que traslada documentos físicos y firmas de aprobación entre dependencias públicas aisladas.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-blue-300 bg-blue-950/30 p-3 rounded-lg border border-blue-900/50 flex items-center gap-2">
+                            <i data-lucide="help-circle" class="w-5 h-5 flex-shrink-0"></i>
+                            <span>La digitalización no debe ser la mera automatización de la burocracia, sino un rediseño de raíz centrado en la experiencia ciudadana.</span>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                notes: "El diagnóstico del BID nos revela una paradoja: a pesar de los esfuerzos de digitalización, solo el 7% de los latinoamericanos realiza su último trámite en línea. ¿Por qué este uso es tan incipiente? El estudio identifica cuatro barreras estructurales cruzadas. Primero, la Baja Disponibilidad: los gobiernos no han digitalizado los trámites prioritarios de extremo a extremo. En el Perú, históricamente solo el 15.1% de los trámites se podían empezar en línea. Segundo, la Brecha de Acceso: carecemos de banda ancha fija estable. Tercero, las Brechas de Capacidad Financiera: muchos trámites en línea requieren el pago de una tasa, pero si solo el 40% de la población está bancarizada con tarjeta de débito, la mayoría se ve forzada a ir presencialmente a hacer el depósito en ventanilla del banco. Y cuarto, la Alfabetización Digital: un ciudadano puede ser muy activo en redes sociales básicas, pero carece de la competencia para navegar un portal estatal complejo. Debemos atacar las cuatro barreras.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="grid" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Barreras de Uso (Análisis BID)</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">¿Por qué los ciudadanos no usan los canales digitales?</h2>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-blue-400 block">1. Baja Disponibilidad de Oferta</span>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Menos del 50% de los trámites centrales están digitalizados de extremo a extremo. En el Perú, el indicador histórico de inicio de trámites en línea era de apenas <strong>15.1%</strong>.
+                                </p>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-amber-400 block">2. Brecha de Acceso de Conectividad</span>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Los ciudadanos cuentan con planes prepago móviles inestables y carecen de suscripciones a banda ancha fija estable (solo el 11% de cobertura en la región).
+                                </p>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-rose-400 block">3. Falta de Inclusión Financiera</span>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Solo el 40% de los ciudadanos de bajos ingresos cuenta con tarjeta de débito/crédito, lo que les impide abonar las tasas administrativas de los trámites en pasarelas en línea.
+                                </p>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-emerald-400 block">4. Alfabetización Digital Insuficiente</span>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Capacidad reducida para navegar páginas dinámicas de gobierno, rellenar formularios interactivos sofisticados e interpretar el lenguaje técnico legal de la administración.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                notes: "Esta diapositiva aborda la barrera invisible más difícil de derribar en la administración pública: la arquitectura de la desconfianza. El BID halló que el 90% de los funcionarios que diseñan trámites asumen que el ciudadano miente o intenta cometer fraude. Por ende, diseñan el trámite no para facilitarle la vida al 98% de ciudadanos honestos, sino para 'atrapar' al 2% deshonesto. Esto genera una proliferación de requisitos y validaciones previos que asfixian al usuario. Además, el 43% de los directivos públicos desconfía de la honestidad de su propio personal de ventanilla. ¿Cómo solucionan esto? Quitándoles toda discrecionalidad y exigiendo que cada trámite pase por múltiples firmas. Cuando digitalizamos bajo esta cultura, lo único que hacemos es programar la desconfianza en código HTML. Creamos portales web lentos, llenos de validaciones redundantes y requisitos absurdos. La verdadera transformación digital exige un cambio cultural: el Estado debe confiar en el ciudadano por defecto.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="scale" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">La Barrera Invisible</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">Arquitectura de la Desconfianza en el Estado</h2>
+                        
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                La lógica de los sistemas públicos en América Latina parte, históricamente, de un supuesto de <strong>presunción de falsedad</strong> o mala fe del ciudadano. Se asume que el usuario intenta burlar el sistema, por lo que se diseñan procesos con un exceso de trabas que castigan al 98% de personas honestas.
+                            </p>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-center border-t border-slate-800 pt-3">
+                                <div>
+                                    <div class="text-xl font-bold text-rose-500">90%</div>
+                                    <p class="text-[10px] text-slate-400">De funcionarios asume que los ciudadanos intentan abusar de los servicios.</p>
+                                </div>
+                                <div>
+                                    <div class="text-xl font-bold text-rose-500">43%</div>
+                                    <p class="text-[10px] text-slate-400">De directivos cree que se requiere un control estricto para evitar sobornos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-rose-950/20 border border-rose-900/40 rounded-xl p-3 flex items-center gap-3">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-rose-400 flex-shrink-0"></i>
+                            <p class="text-[11px] text-rose-300 leading-tight">
+                                <strong>Peligro:</strong> Si digitalizamos procesos bajo esta cultura de desconfianza, terminamos simplemente <strong>"programando la burocracia"</strong> en código HTML, sin generar valor real.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                notes: "El Perú no ha sido ajeno a este debate global y ha formalizado su estrategia mediante la Política Nacional de Transformación Digital (PNTD) al 2030, aprobada por Decreto Supremo de la Presidencia del Consejo de Ministros (PCM). La PNTD define la transformación digital no como un fin tecnológico, sino como un proceso estratégico de cambio organizativo y cultural. El núcleo del modelo conceptual de nuestra política es el ciudadano y el ejercicio de su 'Ciudadanía Digital'. El modelo se sostiene sobre cuatro grandes pilares: la Conectividad, la Educación (para el talento digital), el Gobierno Digital (para los servicios empáticos) y la Economía Digital (para la productividad). Como futuros decisores públicos, deben notar que el Objetivo Prioritario 1 busca garantizar el acceso inclusivo, priorizando a las poblaciones excluidas por condiciones socioeconómicas, geográficas, lingüísticas o de discapacidad. La PNTD asume el reto de que el Gobierno Digital debe ser, por definición, un mecanismo de inclusión social.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="globe" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Marco Nacional: PNTD al 2030</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">Política Nacional de Transformación Digital</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">La Concepción de la Política</h3>
+                                <p class="text-[11px] text-slate-300 leading-relaxed">
+                                    Promueve el cambio cultural necesario para aprovechar el mundo digital y la inteligencia de datos. Concibe el desarrollo de la ciudadanía digital en base a 8 capacidades clave a través de 82 servicios estratégicos de la PNTD.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Pilares Estratégicos</h3>
+                                <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400">
+                                    <span class="p-1.5 bg-slate-950 rounded border border-slate-850">🌐 Conectividad</span>
+                                    <span class="p-1.5 bg-slate-950 rounded border border-slate-850">🎓 Educación</span>
+                                    <span class="p-1.5 bg-slate-950 rounded border border-slate-850">🏛️ Gobierno</span>
+                                    <span class="p-1.5 bg-slate-950 rounded border border-slate-850">💼 Economía</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/40 border border-slate-800 p-3.5 rounded-xl text-center text-xs text-slate-400">
+                            El modelo sitúa a la <strong>Ciudadanía Digital</strong> como el núcleo y motor de todo el proceso de transformación nacional.
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                notes: "Una de las mayores innovaciones metodológicas de la política peruana es la creación del 'Índice de Ciudadanía Digital per cápita', calculado a través de la ENAHO. En lugar de limitarse a contar cuántos peruanos tienen planes de celular, el INEI mide activamente cuántas de estas ocho 'capacidades o libertades digitales' ejerce el ciudadano. Las libertades van desde las más básicas, como buscar información o comunicarse, hasta las transaccionales e institucionales, como operar en la banca móvil, comprar y vender, y realizar trámites con el Estado. Las capacidades más avanzadas implican la participación ciudadana activa y la creación de contenidos o programación de software, habilidad básica de capital humano donde hoy solo el 3% de la población mayor de 14 años en el Perú califica. Como gestores, nuestro éxito se medirá por el incremento real en el promedio de este índice en los distritos y regiones más vulnerables del país.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="award" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Métrica de Plenitud Digital</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">¿Cómo medimos la inclusión digital en el Perú?</h2>
+                        
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                            <span class="text-xs text-slate-400 block mb-2">Las 8 capacidades de Ciudadanía Digital evaluadas por la ENAHO:</span>
+                            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-300">
+                                <span class="flex items-center gap-1.5"><i data-lucide="search" class="w-3.5 h-3.5 text-blue-400"></i> 1. Buscar información</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="message-square" class="w-3.5 h-3.5 text-blue-400"></i> 2. Comunicación en línea</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-400"></i> 3. Educación / Capacitación</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-blue-400"></i> 4. Compras en línea</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="wallet" class="w-3.5 h-3.5 text-blue-400"></i> 5. Operaciones de banca</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5 text-blue-400"></i> 6. Trámites con el Estado</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5 text-blue-400"></i> 7. Participación / Opinión</span>
+                                <span class="flex items-center gap-1.5"><i data-lucide="code-2" class="w-3.5 h-3.5 text-blue-400"></i> 8. Creación de software</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/20 border border-blue-900/40 p-3 rounded-lg text-xs text-blue-300">
+                            <strong>Indicador:</strong> Escala cuantitativa de <strong>0 a 8</strong> que mide cuántas capacidades ejerce una persona. Es una perspectiva de evaluación a nivel nacional y departamental de más de 10 años.
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                notes: "Para garantizar la continuidad de estas políticas más allá de los ciclos de gobierno, el Plan Estratégico de Desarrollo Nacional al 2050 (PEDN), elaborado por CEPLAN, ha anclado el Gobierno Digital y la conectividad en el núcleo del desarrollo a largo plazo, específicamente en su Objetivo Nacional 3. El PEDN al 2050 utiliza estándares globales para medir nuestro avance. En conectividad, monitorea el Índice de Acceso a las TIC (del Network Readiness Index), que no solo mide cobertura, sino también tarifas y el costo del equipamiento para las familias. Y en Gobierno Digital, adopta el Índice de Madurez GovTech (GTMI) del Banco Mundial. El GTMI evalúa de forma rigurosa cuatro pilares: la madurez de los sistemas centrales del Estado, la digitalización de los trámites orientados al ciudadano, la participación digital ciudadana y los habilitadores transversales como la firma e identidad digital. Esto obliga a toda la administración pública peruana a planificar con visión prospectiva.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Planificación al 2050 (CEPLAN)</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Plan Estratégico de Desarrollo Nacional</h2>
+                        
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Hitos y Metas de Conectividad (AE 3.6.1)</h3>
+                            
+                            <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                                <div class="bg-slate-950 p-2 rounded">
+                                    <span class="text-[10px] text-slate-400 block">Línea base</span>
+                                    <div class="font-bold text-white">71.8%</div>
+                                </div>
+                                <div class="bg-slate-950 p-2 rounded">
+                                    <span class="text-[10px] text-slate-400 block">Año 2030</span>
+                                    <div class="font-bold text-blue-400">81.1%</div>
+                                </div>
+                                <div class="bg-slate-950 p-2 rounded">
+                                    <span class="text-[10px] text-slate-400 block">Año 2040</span>
+                                    <div class="font-bold text-blue-400">85.3%</div>
+                                </div>
+                                <div class="bg-slate-950 p-2 rounded">
+                                    <span class="text-[10px] text-slate-400 block">Año 2050</span>
+                                    <div class="font-bold text-emerald-400">87.8%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/40 border border-slate-800 p-3 rounded-lg text-[11px] text-slate-400">
+                            <strong>Métrica de Gobierno Digital:</strong> Evalúa la madurez de los sistemas del Estado mediante el <strong>Índice de Madurez GovTech (GTMI)</strong> del Banco Mundial, promoviendo la experimentación, compras públicas innovadoras y simplificación administrativa progresiva.
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 11,
+                notes: "Llegamos al final de nuestra sesión con una hoja de ruta clara para nosotros como gestores públicos. No podemos seguir diseñando servicios de información y gobierno digital bajo los mismos supuestos del pasado. Primero, adoptemos el enfoque Mobile-First: todo servicio público digital debe ser perfectamente operable desde un smartphone de gama media, que es el único dispositivo que tiene la inmensa mayoría de los hogares peruanos. Segundo, diseñemos interfaces empáticas: simplifiquemos el lenguaje técnico-jurídico y hagamos portales accesibles. Tercero, exijamos la Interoperabilidad Obligatoria: el ciudadano no tiene por qué presentar documentos que el propio Estado ya posee en sus bases de datos. Y cuarto, desarrollemos metodologías de pago móvil e inclusión asistida para alfabetizar en el proceso. Recordemos siempre esta premisa del BID: 'El mejor trámite es el que no se tiene que hacer'. Debemos usar la inteligencia de datos para predecir las necesidades de la población y entregar los servicios de forma proactiva. Quedo atento a sus preguntas para iniciar el debate de nuestra clase. Muchas gracias.",
+                content: `
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-blue-500">
+                            <i data-lucide="check-square" class="w-5 h-5"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Hoja de Ruta para Gestores Públicos</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Desafíos y Siguiente Paso Estratégico</h2>
+                        
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <span class="font-bold text-blue-400 block">1. Enfoque "Mobile-First"</span>
+                                <p class="text-[10px] text-slate-400 leading-tight">Optimizar interfaces públicas de trámites exclusivamente para pantallas y redes de telefonía móvil.</p>
+                            </div>
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <span class="font-bold text-amber-400 block">2. Interfaces Empáticas</span>
+                                <p class="text-[10px] text-slate-400 leading-tight">Rediseñar bajo metodologías ágiles de experiencia del ciudadano y legibilidad.</p>
+                            </div>
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <span class="font-bold text-rose-400 block">3. Interoperabilidad Real</span>
+                                <p class="text-[10px] text-slate-400 leading-tight">Garantizar que las entidades públicas consuman sus bases de datos compartidas de manera obligatoria.</p>
+                            </div>
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 space-y-1">
+                                <span class="font-bold text-emerald-400 block">4. Inclusión Financiera</span>
+                                <p class="text-[10px] text-slate-400 leading-tight">Integrar pasarelas de pago y billeteras digitales (Yape, Plin) de uso masivo popular.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-850 text-center font-serif text-sm italic text-blue-300">
+                            "El mejor trámite es el que no se tiene que hacer: Hacia una entrega proactiva basada en datos e interoperabilidad."
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let currentSlide = 0;
+        let syntheticVoice = null;
+
+        // Iniciar Lucide Icons
+        function initIcons() {
+            lucide.createIcons();
+        }
+
+        // Renderizar la diapositiva actual
+        function renderSlide() {
+            const slide = slidesData[currentSlide];
+            const contentContainer = document.getElementById('slide-content');
+            const notesContainer = document.getElementById('speaker-notes');
+            const counterContainer = document.getElementById('slide-counter');
+            const progressBar = document.getElementById('progress-bar');
+
+            // Detener voz si se cambia de diapositiva
+            window.speechSynthesis.cancel();
+            document.getElementById('toggle-guide').innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Leer notas';
+            initIcons();
+
+            // Transición del contenido
+            contentContainer.classList.add('opacity-0');
+            setTimeout(() => {
+                contentContainer.innerHTML = slide.content;
+                notesContainer.textContent = slide.notes;
+                counterContainer.textContent = `Diapositiva ${currentSlide + 1} / ${slidesData.length}`;
+                
+                // Calcular progreso
+                const percentage = ((currentSlide + 1) / slidesData.length) * 100;
+                progressBar.style.width = `${percentage}%`;
+
+                // Habilitar / Deshabilitar botones
+                document.getElementById('btn-prev').disabled = currentSlide === 0;
+                document.getElementById('btn-next').disabled = currentSlide === slidesData.length - 1;
+
+                contentContainer.classList.remove('opacity-0');
+                initIcons();
+            }, 150);
+        }
+
+        // Leer notas en voz alta
+        function speakNotes() {
+            const toggleButton = document.getElementById('toggle-guide');
+            
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                toggleButton.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Leer notas';
+                initIcons();
+                return;
+            }
+
+            const textToSpeak = slidesData[currentSlide].notes;
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'es-PE'; // Español de Perú
+            
+            utterance.onend = () => {
+                toggleButton.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Leer notas';
+                initIcons();
+            };
+
+            toggleButton.innerHTML = '<i data-lucide="volume-x" class="w-3.5 h-3.5"></i> Silenciar';
+            initIcons();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Controladores de eventos
+        document.getElementById('btn-next').addEventListener('click', () => {
+            if (currentSlide < slidesData.length - 1) {
+                currentSlide++;
+                renderSlide();
+            }
+        });
+
+        document.getElementById('btn-prev').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide();
+            }
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            currentSlide = 0;
+            renderSlide();
+        });
+
+        document.getElementById('toggle-guide').addEventListener('click', speakNotes);
+
+        // Control con flechas de teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                if (currentSlide < slidesData.length - 1) {
+                    currentSlide++;
+                    renderSlide();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    renderSlide();
+                }
+            }
+        });
+
+        // Carga inicial
+        window.onload = function() {
+            renderSlide();
+        };
+    </script>
+</body>
+</html>
