@@ -1,2 +1,0 @@
-# Egcc
-Documentos UNMSM
